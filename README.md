@@ -60,6 +60,8 @@ yarn start:dev
 
 The frontend runs on `https://localhost:3100` in development.
 
+Because development uses a local self-signed HTTPS certificate, your browser will usually show a certificate warning the first time you open the app. You can proceed locally once you trust the certificate.
+
 The frontend connects to the backend using:
 
 ```ts
