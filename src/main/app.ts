@@ -23,7 +23,8 @@ new Nunjucks(developmentMode).enableFor(app);
 const faviconPath = path.join(__dirname, '/public/assets/images/favicon.ico');
 
 if (fs.existsSync(faviconPath)) {
-  app.use(favicon(faviconPath));
+  const faviconMiddleware = favicon(faviconPath) as unknown as express.RequestHandler;
+  app.use(faviconMiddleware);
 }
 
 app.use(bodyParser.json());
