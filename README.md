@@ -244,6 +244,24 @@ The frontend defaults to `http://localhost:4000` for the task API.
 
 If you run the backend on a different port, set `TASKS_API_URL` to the correct backend URL before starting the frontend.
 
+### macOS and Windows notes
+
+The documented commands are written for macOS or Linux style shells.
+
+The frontend works well on macOS. It can also be developed and tested on Windows, especially from PowerShell, but there are a few shell-specific differences:
+
+- paths such as `~/hmcts-task-manager-frontend` may need to be replaced with your actual local path
+- commands written with Unix shell syntax may need small adjustments in Windows shells
+- `yarn start:dev`, `yarn test`, `yarn test:unit`, `yarn test:routes`, and `yarn build` are the safest cross-platform commands in this repo
+
+The production scripts use POSIX-style environment variable syntax:
+
+```bash
+NODE_ENV=production ...
+```
+
+That works as written on macOS and Linux, but on Windows it may require PowerShell-specific syntax or a tool such as `cross-env`.
+
 ### Yarn resolution behaves unexpectedly
 
 This repo uses Yarn 3 with `node-modules` linking to stay compatible with the existing webpack setup.
