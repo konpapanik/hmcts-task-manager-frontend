@@ -275,3 +275,9 @@ That is intentional and configured in `.yarnrc.yml`.
 - The repo uses Yarn 3 with `node-modules` linking to keep the starter setup compatible with the webpack toolchain.
 - The UI uses GOV.UK components to keep the layout accessible and familiar without introducing unnecessary frontend complexity.
 - The frontend is intentionally server-rendered to keep the solution simple and easy to explain in the technical test.
+
+## Screenshot
+
+The frontend home page shows the task creation form and the current task list in a single server-rendered view.
+
+![Frontend home page](./Screenshot%202026-05-11%20at%2018.49.56.png)
