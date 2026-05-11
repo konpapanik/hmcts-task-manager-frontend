@@ -1,121 +1,175 @@
-{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
 
 {% extends "template.njk" %}
 
-<!-- You may want to make further use of these components: https://design-system.service.gov.uk/components/
-but ultimately it is up to you -->
-
 {% block content %}
-  <h1 class="govuk-heading-xl">Welcome to your dev test!</h1>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <span class="govuk-caption-l">HMCTS caseworker tasks</span>
+      <h1 class="govuk-heading-xl">Manage tasks</h1>
+      <p class="govuk-body-l">Create tasks, review due dates, and keep statuses up to date in one place.</p>
 
-  <!-- The freedom is yours. You can design the solution however you like, however there is a starting point provided
-  to ensure you have both services running. You may want to make use of the Gov UK Components:
-  https://design-system.service.gov.uk/components/ to add tabs and so forth :) -->
+      {% if successMessage %}
+        <div class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="success-message" data-module="govuk-notification-banner">
+          <div class="govuk-notification-banner__header">
+            <h2 class="govuk-notification-banner__title" id="success-message">Success</h2>
+          </div>
+          <div class="govuk-notification-banner__content">
+            <p class="govuk-notification-banner__heading">{{ successMessage }}</p>
+          </div>
+        </div>
+      {% endif %}
 
-  {% if example.id %}
+      {% if pageError %}
+        <div class="govuk-warning-text">
+          <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+          <strong class="govuk-warning-text__text">
+            <span class="govuk-warning-text__assistive">Warning</span>
+            {{ pageError }}
+          </strong>
+        </div>
+      {% endif %}
 
-    {{ govukSummaryList({
-      rows: [
-        {
-          key: {
-            text: "ID"
-          },
-          value: {
-            text: example.id
-          },
-          actions: {
-            items: [
-              {
-                href: "#",
-                text: "Change",
-                visuallyHiddenText: "change case id ?!"
+      {% if errorSummary.length %}
+        {{ govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: errorSummary
+        }) }}
+      {% endif %}
+
+      <section class="govuk-!-margin-bottom-8">
+        <h2 class="govuk-heading-l">Create a task</h2>
+        <form action="/tasks" method="post" novalidate>
+          {% if formErrors.title %}
+            {{ govukInput({
+              id: "title",
+              name: "title",
+              label: {
+                text: "Title",
+                classes: "govuk-label--m"
+              },
+              value: formValues.title,
+              errorMessage: {
+                text: formErrors.title
+              },
+              autocomplete: "off"
+            }) }}
+          {% else %}
+            {{ govukInput({
+              id: "title",
+              name: "title",
+              label: {
+                text: "Title",
+                classes: "govuk-label--m"
+              },
+              value: formValues.title,
+              autocomplete: "off"
+            }) }}
+          {% endif %}
+
+          {% if formErrors.description %}
+            {{ govukTextarea({
+              id: "description",
+              name: "description",
+              label: {
+                text: "Description"
+              },
+              value: formValues.description,
+              errorMessage: {
+                text: formErrors.description
+              },
+              rows: 5
+            }) }}
+          {% else %}
+            {{ govukTextarea({
+              id: "description",
+              name: "description",
+              label: {
+                text: "Description"
+              },
+              value: formValues.description,
+              rows: 5
+            }) }}
+          {% endif %}
+
+          {% if formErrors.status %}
+            {{ govukSelect({
+              id: "status",
+              name: "status",
+              label: {
+                text: "Status"
+              },
+              value: formValues.status,
+              errorMessage: {
+                text: formErrors.status
+              },
+              items: statusOptions
+            }) }}
+          {% else %}
+            {{ govukSelect({
+              id: "status",
+              name: "status",
+              label: {
+                text: "Status"
+              },
+              value: formValues.status,
+              items: statusOptions
+            }) }}
+          {% endif %}
+
+          {% if formErrors.dueDate %}
+            {{ govukInput({
+              id: "dueDate",
+              name: "dueDate",
+              label: {
+                text: "Due date and time"
+              },
+              type: "datetime-local",
+              value: formValues.dueDate,
+              errorMessage: {
+                text: formErrors.dueDate
               }
-            ]
-          }
-        },
-        {
-          key: {
-            text: "Case Number"
-          },
-          value: {
-            text: example.caseNumber
-          },
-          actions: {
-            items: [
-              {
-                href: "#",
-                text: "Change",
-                visuallyHiddenText: "change case number"
-              }
-            ]
-          }
-        },
-        {
-          key: {
-            text: "Title"
-          },
-          value: {
-            html: example.title
-          },
-          actions: {
-            items: [
-              {
-                href: "#",
-                text: "Change",
-                visuallyHiddenText: "change case title"
-              }
-            ]
-          }
-        },
-        {
-          key: {
-            text: "Description"
-          },
-          value: {
-            html: example.description
-          },
-          actions: {
-            items: [
-               {
-                 href: "#",
-                 text: "Delete",
-                 visuallyHiddenText: "Delete description"
-               },
-               {
-                 href: "#",
-                 text: "Change",
-                 visuallyHiddenText: "Change description"
-               }
-            ]
-          }
-        },
-        {
-          key: {
-            text: "Status"
-          },
-          value: {
-            html: example.status
-          },
-          actions: {
-            items: [
-            ]
-          }
-        },
-        {
-          key: {
-           text: "Created Date"
-          },
-          value: {
-           html: example.createdDate
-          },
-          actions: {
-           items: [
-           ]
-          }
-        }
-      ]
-    }) }}
+            }) }}
+          {% else %}
+            {{ govukInput({
+              id: "dueDate",
+              name: "dueDate",
+              label: {
+                text: "Due date and time"
+              },
+              type: "datetime-local",
+              value: formValues.dueDate
+            }) }}
+          {% endif %}
 
-  {% endif %}
+          {{ govukButton({ text: "Create task" }) }}
+        </form>
+      </section>
+    </div>
+  </div>
+
+  <section>
+    <h2 class="govuk-heading-l">Current tasks</h2>
+
+    {% if tasks.length %}
+      {{ govukTable({
+        firstCellIsHeader: false,
+        head: [
+          { text: "Task" },
+          { text: "Due" },
+          { text: "Status" },
+          { text: "Actions" }
+        ],
+        rows: taskRows
+      }) }}
+    {% else %}
+      <p class="govuk-body">No tasks yet. Create one using the form above.</p>
+    {% endif %}
+  </section>
 
 {% endblock %}

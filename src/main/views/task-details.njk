@@ -1,0 +1,107 @@
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% extends "template.njk" %}
+
+{% block content %}
+  <a href="/" class="govuk-back-link">Back to tasks</a>
+
+  {% if successMessage %}
+    <div class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="task-success-message" data-module="govuk-notification-banner">
+      <div class="govuk-notification-banner__header">
+        <h2 class="govuk-notification-banner__title" id="task-success-message">Success</h2>
+      </div>
+      <div class="govuk-notification-banner__content">
+        <p class="govuk-notification-banner__heading">{{ successMessage }}</p>
+      </div>
+    </div>
+  {% endif %}
+
+  {% if pageError %}
+    <div class="govuk-warning-text">
+      <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+      <strong class="govuk-warning-text__text">
+        <span class="govuk-warning-text__assistive">Warning</span>
+        {{ pageError }}
+      </strong>
+    </div>
+  {% endif %}
+
+  {% if errorSummary.length %}
+    {{ govukErrorSummary({
+      titleText: "There is a problem",
+      errorList: errorSummary
+    }) }}
+  {% endif %}
+
+  <span class="govuk-caption-l">Task {{ task.id }}</span>
+  <h1 class="govuk-heading-xl">{{ task.title }}</h1>
+
+  {{ govukSummaryList({
+    rows: [
+      {
+        key: { text: "Description" },
+        value: { text: task.descriptionText }
+      },
+      {
+        key: { text: "Status" },
+        value: { html: '<strong class="' + task.statusClass + '">' + task.statusLabel + '</strong>' }
+      },
+      {
+        key: { text: "Due date" },
+        value: { text: task.dueDateText }
+      },
+      {
+        key: { text: "Created" },
+        value: { text: task.createdAtText }
+      }
+    ]
+  }) }}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-half">
+      <h2 class="govuk-heading-m">Update status</h2>
+      <form action="/tasks/{{ task.id }}/status" method="post" novalidate>
+        {% if formErrors.status %}
+          {{ govukSelect({
+            id: "status",
+            name: "status",
+            label: {
+              text: "Status"
+            },
+            value: task.status,
+            errorMessage: {
+              text: formErrors.status
+            },
+            items: statusOptions
+          }) }}
+        {% else %}
+          {{ govukSelect({
+            id: "status",
+            name: "status",
+            label: {
+              text: "Status"
+            },
+            value: task.status,
+            items: statusOptions
+          }) }}
+        {% endif %}
+
+        {{ govukButton({ text: "Save status" }) }}
+      </form>
+    </div>
+
+    <div class="govuk-grid-column-one-half">
+      <h2 class="govuk-heading-m">Delete task</h2>
+      <p class="govuk-body">Delete this task if it is no longer needed.</p>
+      <form action="/tasks/{{ task.id }}/delete" method="post">
+        {{ govukButton({
+          text: "Delete task",
+          classes: "govuk-button--warning"
+        }) }}
+      </form>
+    </div>
+  </div>
+{% endblock %}
